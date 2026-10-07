@@ -2,10 +2,10 @@ const mssql = require("mssql");
 
 // Configuração da conexão com o SQL Server
 const configuracao = {
-    user    : "BD9999",
-    password: "BD9999",
+    user    : "BD26634",
+    password: "BD26634",
     server  : "regulus.cotuca.unicamp.br",
-    database: "BD9999",
+    database: "BD26634",
     options: {
         encrypt: true,
         trustServerCertificate: true,
