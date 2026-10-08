@@ -1,11 +1,12 @@
 const mssql = require("mssql");
 
-// Configuração da conexão com o SQL Server
+// Configuração da conexão com o SQL Server (valores vêm do arquivo .env)
+// IMPORTANTE: o dotenv precisa ser carregado ANTES de este arquivo ser importado
 const configuracao = {
-    user    : "BD26634",
-    password: "BD26634",
-    server  : "regulus.cotuca.unicamp.br",
-    database: "BD26634",
+    user    : process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    server  : process.env.DB_SERVER,
+    database: process.env.DB_NAME,
     options: {
         encrypt: true,
         trustServerCertificate: true,
