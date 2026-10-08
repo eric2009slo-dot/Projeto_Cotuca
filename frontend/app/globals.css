@@ -97,7 +97,7 @@ main button:hover {
   display: block;
   width: 300px;
   padding: 12px;
-  margin: 8px auto 20px;
+  margin: 6px auto 12px;
   background-color: #2A2F36;
   color: #F5F7FA;
   border: 1px solid #5BC0BE;
@@ -107,7 +107,7 @@ main button:hover {
 
 .login-card {
   background-color: #2A2F36;
-  padding: 40px;
+  padding: 30px 35px;
   border-radius: 12px;
   width: 430px;
   margin: auto;
@@ -137,3 +137,39 @@ main button:hover {
   color: #F5F7FA;
 }
 
+
+.senha-container {
+  position: relative;
+  width: 300px;
+  margin: 0 auto;
+}
+
+.senha-container input {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 8px 0 20px;
+  padding-right: 45px;
+}
+
+.senha-container button {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  background: none;
+  border: none;
+  color: #5BC0BE;
+  padding: 5px;
+  margin: 0;
+}
+
+.senha-container button:hover {
+  background: none;
+  color: #F5F7FA;
+}
+
+
+.login-card > button:last-child {
+  display: block;
+  width: 300px;
+  margin: 15px auto 5px;
+}
