@@ -1,3 +1,4 @@
+import Link from "next/link";
 export default function Home() {
   return (
     <main>
@@ -15,6 +16,13 @@ export default function Home() {
         <h2>IRON BONDS</h2>
 
         <p>Seu espaço. Seu horário. Sua reserva.</p>
+
+        <Link href="/cadastro">
+          <button>CADASTRAR-SE</button>
+        </Link>
+        <Link href="/login">
+          <button>ENTRAR</button>
+        </Link>
       </div>
     </main>
   );

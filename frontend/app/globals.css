@@ -73,3 +73,67 @@ main p {
   font-size: 18px;
   line-height: 1.6;
 }
+
+main button {
+  margin: 10px;
+  padding: 12px 24px;
+  background-color: #5BC0BE;
+  color: #171A1F;
+  border: none;
+  border-radius: 6px;
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+
+main button:hover {
+  background-color: #12343B;
+  color: #5BC0BE;
+}
+
+.login-card input {
+  display: block;
+  width: 300px;
+  padding: 12px;
+  margin: 8px auto 20px;
+  background-color: #2A2F36;
+  color: #F5F7FA;
+  border: 1px solid #5BC0BE;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.login-card {
+  background-color: #2A2F36;
+  padding: 40px;
+  border-radius: 12px;
+  width: 430px;
+  margin: auto;
+  box-sizing: border-box;
+}
+
+.login-card label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.cadastro-link {
+  text-align: center;
+  white-space: nowrap;
+  margin-top: 20px;
+}
+
+.cadastro-link a {
+  color: #5BC0BE;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.cadastro-link a:hover {
+  color: #F5F7FA;
+}
+
