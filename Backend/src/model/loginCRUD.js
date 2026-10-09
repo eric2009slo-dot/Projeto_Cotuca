@@ -5,12 +5,12 @@ class LoginCRUD
     this.db = db;
   }
 
-  // busca o usuário pelo login (traz o senha_hash para conferir a senha)
-  buscaUsuarioPorLogin(login) {
+  // busca o usuário pelo email (traz o senha_hash para conferir a senha)
+  buscaUsuarioPorLogin(email) {
     return new this.db.Request()
-      .input("login", this.db.VarChar(50), login)
+      .input("email", this.db.VarChar(255), email)
       .query(`SELECT id, nome_completo, email, login, senha_hash
-              FROM USUARIO WHERE login = @login`);
+              FROM USUARIO WHERE email = @email`);
   }
 
   // registra o acesso na tabela ACESSO e atualiza o último acesso do usuário

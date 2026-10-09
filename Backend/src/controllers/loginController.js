@@ -6,17 +6,17 @@ const { tratarErro } = require("../utils/erros");
 
 class LoginController
 {
-  // POST /login   body: { "login": "maria", "senha": "123456" }
+  // POST /login   body: { "email": "maria@email.com", "senha": "123456" }
   // Resposta: { "token": "...", "usuario": { id, nome_completo, email, login } }
   efetuarLogin() {
     return async function (request, response) {
       const dados = request.body || {};
-      if (!dados.login || !dados.senha) {
-        return response.status(400).json({ erro: "Informe o login e a senha." });
+      if (!dados.email || !dados.senha) {
+        return response.status(400).json({ erro: "Informe o email e a senha." });
       }
       try {
         const loginCRUD = new LoginCRUD(db);
-        const resultados = await loginCRUD.buscaUsuarioPorLogin(String(dados.login).trim());
+        const resultados = await loginCRUD.buscaUsuarioPorLogin(String(dados.email).trim());
         const usuario = resultados.recordset[0];
 
         // mesma mensagem para login e senha errados (não revela qual está errado)
