@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { Mail, Lock } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -8,6 +9,7 @@ const [email, setEmail] = useState("");
 const [senha, setSenha] = useState("");
 const [mensagem, setMensagem] = useState("");
 const [carregando, setCarregando] = useState(false);
+const router = useRouter();
 
 
 
@@ -40,6 +42,8 @@ async function fazerLogin(e) {
 
     console.log("Usuário autenticado:", dados.usuario);
     console.log("Token:", dados.token);
+
+    router.push("/gerenciamento");
 
   } catch (erro) {
     setMensagem("Não foi possível conectar ao servidor.");
