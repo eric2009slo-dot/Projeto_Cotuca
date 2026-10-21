@@ -242,3 +242,127 @@ main section.grid > a svg {
 main section.grid > a > div {
   font-size: 17px;
 }
+
+
+
+
+main:has(.laboratorio-container) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+main:has(.laboratorio-container) .laboratorio-container {
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+  text-align: left;
+  transform: translateX(90px);
+}
+
+main:has(.laboratorio-container) .laboratorio-container > section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.laboratorio-container) h2 {
+  font-size: 24px;
+  font-family: inherit;
+  margin: 0;
+}
+
+
+
+main:has(.laboratorio-container) .laboratorio-container form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+main:has(.laboratorio-container) .laboratorio-container form > div {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+main:has(.laboratorio-container) .laboratorio-container form input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.laboratorio-container) .laboratorio-container form button {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  align-self: stretch;
+}
+
+
+
+
+
+
+
+
+
+
+main:has(.sala-container) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+main:has(.sala-container) .sala-container {
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+  text-align: left;
+  transform: translateX(90px);
+}
+
+main:has(.sala-container) .sala-container > section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.sala-container) h2 {
+  font-size: 24px;
+  font-family: inherit;
+  margin: 0;
+}
+
+
+
+main:has(.sala-container) .sala-container form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+main:has(.sala-container) .sala-container form > div {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+main:has(.sala-container) .sala-container form input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.sala-container) .sala-container form button {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  align-self: stretch;
+}
