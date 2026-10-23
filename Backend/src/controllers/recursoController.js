@@ -148,6 +148,35 @@ class RecursoController
       }
     };
   }
+  async atualizarStatusRecurso(req, res) {
+    const STATUS_VALIDOS = ['Livre', 'Ocupado', 'Reservado', 'Bloqueado'];
+
+    try {
+        const id = Number(req.params.id);
+        const { status } = req.body || {};
+
+        if (!Number.isInteger(id) || id <= 0) {
+            return res.status(400).json({ erro: 'ID do recurso inválido.' });
+        }
+
+        if (typeof status !== 'string' || !STATUS_VALIDOS.includes(status.trim())) {
+            return res.status(400).json({
+                erro: `Status inválido. Use: ${STATUS_VALIDOS.join(', ')}.`
+            });
+        }
+
+        const resultado = await recursoCRUD.atualizaStatusRecurso(id, status.trim());
+
+        if (!resultado) {
+            return res.status(404).json({ erro: 'Recurso não encontrado.' });
+        }
+
+        return res.status(200).json({ mensagem: 'Status atualizado com sucesso.' });
+    } catch (erro) {
+        console.error(erro);
+        return res.status(500).json({ erro: 'Erro ao atualizar o status do recurso.' });
+    }
+}
 }  // end da class RecursoController
 
 module.exports = RecursoController;

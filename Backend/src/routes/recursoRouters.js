@@ -13,5 +13,7 @@ module.exports = (aplicacao) => {
 
     // rota GET - dados de um recurso por ID
     aplicacao.get("/recursos/:id", obj_RecursoController.listarRecursoPorID());
+    // Status das salas e laborátorios
+    router.put('/recursos/:id/status', recursoController.atualizarStatusRecurso);
 
 }; // end do module_exports
