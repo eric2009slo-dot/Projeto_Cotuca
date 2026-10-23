@@ -1,134 +1,59 @@
 
+
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ClipboardList } from "lucide-react";
 
-export default function Status() {
-  const [nome, setNome] = useState("");
-  const [status, setStatus] = useState([]);
-  const [idEditando, setIdEditando] = useState(null);
-  const [mensagem, setMensagem] = useState("");
+const OPCOES_STATUS = [
+  "Livre",
+  "Ocupado",
+  "Reservado",
+  "Bloqueado"
+];
+
+export default function GerenciamentoStatus() {
+  const [recursos, setRecursos] = useState([]);
+  const [statusSelecionados, setStatusSelecionados] = useState({});
   const [erro, setErro] = useState("");
-
-  async function listarStatus() {
-    try {
-      const resposta = await fetch("http://localhost:3001/status");
-
-      if (!resposta.ok) {
-        throw new Error("Erro ao consultar os status.");
-      }
-
-      const dados = await resposta.json();
-      setStatus(dados);
-    } catch (erro) {
-      setErro("Não foi possível carregar os status.");
-    }
-  }
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    listarStatus();
+    async function buscarRecursos() {
+      try {
+        const resposta = await fetch("http://localhost:3001/recursos");
+
+        if (!resposta.ok) {
+          throw new Error("Erro ao consultar recursos.");
+        }
+
+        const dados = await resposta.json();
+
+        setRecursos(dados);
+
+        const selecoes = {};
+
+        dados.forEach((recurso) => {
+          selecoes[recurso.id] = recurso.status || "Livre";
+        });
+
+        setStatusSelecionados(selecoes);
+      } catch (erro) {
+        setErro("Não foi possível carregar os recursos.");
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    buscarRecursos();
   }, []);
 
-  async function salvarStatus(event) {
-    event.preventDefault();
-    setMensagem("");
-    setErro("");
-
-    const nomeLimpo = nome.trim();
-
-    if (!nomeLimpo) {
-      setErro("Informe o nome do status.");
-      return;
-    }
-
-    const editando = idEditando !== null;
-
-    const duplicado = status.some(
-      (item) =>
-        item.nome.toLowerCase() === nomeLimpo.toLowerCase() &&
-        item.id !== idEditando
-    );
-
-    if (duplicado) {
-      setErro("Já existe um status com esse nome.");
-      return;
-    }
-
-    try {
-      const url = editando
-        ? `http://localhost:3001/status/${idEditando}`
-        : "http://localhost:3001/status";
-
-      const resposta = await fetch(url, {
-        method: editando ? "PUT" : "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ nome: nomeLimpo })
-      });
-
-      const dados = await resposta.json();
-
-      if (!resposta.ok) {
-        setErro(dados.erro || "Erro ao salvar status.");
-        return;
-      }
-
-      setMensagem(
-        editando
-          ? "Status atualizado com sucesso!"
-          : "Status cadastrado com sucesso!"
-      );
-
-      setNome("");
-      setIdEditando(null);
-      await listarStatus();
-    } catch (erro) {
-      setErro("Não foi possível conectar ao servidor.");
-    }
-  }
-
-  function editarStatus(item) {
-    setIdEditando(item.id);
-    setNome(item.nome);
-    setMensagem("");
-    setErro("");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  async function excluirStatus(id) {
-    if (!window.confirm("Tem certeza que deseja excluir este status?")) {
-      return;
-    }
-
-    setErro("");
-    setMensagem("");
-
-    try {
-      const resposta = await fetch(
-        `http://localhost:3001/status/${id}`,
-        { method: "DELETE" }
-      );
-
-      const dados = await resposta.json();
-
-      if (!resposta.ok) {
-        setErro(dados.erro || "Erro ao excluir status.");
-        return;
-      }
-
-      if (idEditando === id) {
-        setIdEditando(null);
-        setNome("");
-      }
-
-      setMensagem("Status excluído com sucesso!");
-      await listarStatus();
-    } catch (erro) {
-      setErro("Não foi possível conectar ao servidor.");
-    }
+  function alterarSelecao(id, novoStatus) {
+    setStatusSelecionados((anteriores) => ({
+      ...anteriores,
+      [id]: novoStatus
+    }));
   }
 
   return (
@@ -147,117 +72,92 @@ export default function Status() {
           <p className="mb-2 text-sm font-semibold tracking-[0.2em] text-[#5BC0BE]">
             IRON BONDS
           </p>
+
           <h1 className="text-3xl font-bold">
             Gerenciamento de Status
           </h1>
+
           <p className="mt-3 text-[#A0A7B1]">
-            Consulte e gerencie os status das reservas.
+            Consulte e gerencie o status dos laboratórios e salas.
           </p>
         </header>
 
         <section className="rounded-xl border border-[#2A2F36] bg-[#20252C] p-6">
+
           <div className="mb-6 flex items-center gap-3">
             <ClipboardList size={28} className="text-[#5BC0BE]" />
             <h2 className="text-xl font-semibold">
-              {idEditando !== null ? "Editar Status" : "Cadastrar Status"}
+              Status dos Recursos
             </h2>
           </div>
 
-          <form onSubmit={salvarStatus} className="flex flex-col gap-5">
-            <div>
-              <label htmlFor="nome-status" className="mb-2 block">
-                Nome do Status
-              </label>
-              <input
-                id="nome-status"
-                type="text"
-                value={nome}
-                onChange={(event) => setNome(event.target.value)}
-                required
-                className="w-full rounded-lg border border-[#343B44] bg-[#171A1F] p-3 text-white"
-                placeholder="Ex.: Livre"
-              />
-            </div>
-
-            {erro && <p className="text-red-400">{erro}</p>}
-            {mensagem && <p className="text-[#5BC0BE]">{mensagem}</p>}
-
-            <button
-              type="submit"
-              className="rounded-lg bg-[#5BC0BE] px-6 py-3 font-semibold text-[#171A1F]"
-            >
-              {idEditando !== null ? "Salvar Alterações" : "Cadastrar Status"}
-            </button>
-
-            {idEditando !== null && (
-              <button
-                type="button"
-                onClick={() => {
-                  setIdEditando(null);
-                  setNome("");
-                }}
-                className="rounded-lg border border-[#343B44] p-3"
-              >
-                Cancelar Edição
-              </button>
-            )}
-          </form>
-        </section>
-
-        <section className="mt-8 rounded-xl border border-[#2A2F36] bg-[#20252C] p-6">
-          <h2 className="mb-6 text-xl font-semibold">
-            Status cadastrados
-          </h2>
-
-          <div className="w-full overflow-x-auto">
-            <table className="w-full border-collapse text-left">
-              <thead>
-                <tr className="border-b border-[#343B44] text-[#5BC0BE]">
-                  <th className="p-3">ID</th>
-                  <th className="p-3">Nome</th>
-                  <th className="p-3">Ações</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {status.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="border-b border-[#343B44]"
-                  >
-                    <td className="p-3">{item.id}</td>
-                    <td className="p-3">{item.nome}</td>
-                    <td className="p-3">
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => editarStatus(item)}
-                          className="rounded-lg bg-[#5BC0BE] px-4 py-2 text-[#171A1F]"
-                        >
-                          Editar
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => excluirStatus(item.id)}
-                          className="rounded-lg bg-red-600 px-4 py-2 text-white"
-                        >
-                          Excluir
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {status.length === 0 && (
-            <p className="mt-4 text-[#A0A7B1]">
-              Nenhum status cadastrado.
+          {carregando && (
+            <p className="text-[#A0A7B1]">
+              Carregando recursos...
             </p>
           )}
-        </section>
 
+          {erro && (
+            <p className="text-red-400">{erro}</p>
+          )}
+
+          {!carregando && !erro && recursos.length === 0 && (
+            <p className="text-[#A0A7B1]">
+              Nenhum laboratório ou sala cadastrado.
+            </p>
+          )}
+
+          <div className="flex flex-col gap-4">
+            {recursos.map((recurso) => (
+              <div
+                key={recurso.id}
+                className="rounded-lg border border-[#343B44] bg-[#171A1F] p-4"
+              >
+                <h3 className="text-lg font-semibold">
+                  {recurso.nome}
+                </h3>
+
+                <p className="mt-1 text-sm text-[#A0A7B1]">
+                  {recurso.codigo} — {recurso.tipo === "LABORATORIO" ? "Laboratório" : "Sala"}
+                </p>
+
+                <label
+                  htmlFor={`status-${recurso.id}`}
+                  className="mt-4 mb-2 block"
+                >
+                  Status
+                </label>
+
+                <select
+                  id={`status-${recurso.id}`}
+                  value={statusSelecionados[recurso.id] || "Livre"}
+                  onChange={(event) =>
+                    alterarSelecao(recurso.id, event.target.value)
+                  }
+                  className="w-full rounded-lg border border-[#343B44] bg-[#20252C] p-3 text-white"
+                >
+                  {OPCOES_STATUS.map((opcao) => (
+                    <option key={opcao} value={opcao}>
+                      {opcao}
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  type="button"
+                  disabled
+                  className="mt-4 w-full cursor-not-allowed rounded-lg bg-[#5BC0BE] px-4 py-3 font-semibold text-[#171A1F] opacity-50"
+                >
+                  Salvar Status
+                </button>
+
+                <p className="mt-2 text-xs text-[#A0A7B1]">
+                  Salvamento disponível após a integração com o backend.
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </main>
   );

@@ -399,3 +399,32 @@ main:has(.status-container) h2 {
   font-family: inherit;
   margin: 0;
 }
+
+
+
+main:has(.status-container) .status-container section > div {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+
+main:has(.status-container) .status-container section > div > div {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+main:has(.status-container) .status-container select {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.status-container) .status-container section button {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-left: 0;
+  margin-right: 0;
+}
