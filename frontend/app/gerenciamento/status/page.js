@@ -56,6 +56,47 @@ export default function GerenciamentoStatus() {
     }));
   }
 
+  
+async function salvarStatus(id) {
+  const novoStatus = statusSelecionados[id];
+
+  try {
+    const resposta = await fetch(
+      `http://localhost:3001/recursos/${id}/status`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          status: novoStatus
+        })
+      }
+    );
+
+    const dados = await resposta.json();
+
+    if (!resposta.ok) {
+      alert(dados.erro || "Erro ao atualizar status.");
+      return;
+    }
+
+    setRecursos((anteriores) =>
+      anteriores.map((recurso) =>
+        recurso.id === id
+          ? { ...recurso, status: novoStatus }
+          : recurso
+      )
+    );
+
+    alert("Status atualizado com sucesso!");
+
+  } catch (erro) {
+    alert("Não foi possível conectar ao servidor.");
+  }
+}
+
+
   return (
     <main className="min-h-screen bg-[#171A1F] p-6 text-[#F5F7FA] md:p-12">
       <div className="status-container mx-auto w-full max-w-3xl">
@@ -145,10 +186,10 @@ export default function GerenciamentoStatus() {
 
                 <button
                   type="button"
-                  disabled
-                  className="mt-4 w-full cursor-not-allowed rounded-lg bg-[#5BC0BE] px-4 py-3 font-semibold text-[#171A1F] opacity-50"
-                >
-                  Salvar Status
+                  onClick={() => salvarStatus(recurso.id)}
+                  className="mt-4 w-full rounded-lg bg-[#5BC0BE] px-4 py-3 font-semibold text-[#171A1F] transition hover:bg-[#48A9A6]"
+                  >
+                   Salvar Status
                 </button>
 
                 <p className="mt-2 text-xs text-[#A0A7B1]">
