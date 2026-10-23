@@ -366,3 +366,36 @@ main:has(.sala-container) .sala-container form button {
   margin: 0;
   align-self: stretch;
 }
+
+
+/* Essa é a parte do Status*/
+
+main:has(.status-container) .status-container {
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+main:has(.status-container) .status-container > section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.status-container) .status-container form > div {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+
+main:has(.status-container) .status-container form input,
+main:has(.status-container) .status-container form button {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.status-container) h2 {
+  font-size: 24px;
+  font-family: inherit;
+  margin: 0;
+}
