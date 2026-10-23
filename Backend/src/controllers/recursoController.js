@@ -148,35 +148,57 @@ class RecursoController
       }
     };
   }
-  async atualizarStatusRecurso(req, res) {
-    const STATUS_VALIDOS = ['Livre', 'Ocupado', 'Reservado', 'Bloqueado'];
 
-    try {
-        const id = Number(req.params.id);
-        const { status } = req.body || {};
+  // PUT /recursos/:id/status
+  atualizarStatusRecurso() {
+    const tipo = this.tipo;
 
-        if (!Number.isInteger(id) || id <= 0) {
-            return res.status(400).json({ erro: 'ID do recurso inválido.' });
+    return async function (request, response) {
+      const STATUS_VALIDOS = [
+        "Livre",
+        "Ocupado",
+        "Reservado",
+        "Bloqueado"
+      ];
+
+      const id = request.params.id;
+      const { status } = request.body || {};
+
+      if (idInvalido(response, id)) return;
+
+      if (
+        typeof status !== "string" ||
+        !STATUS_VALIDOS.includes(status.trim())
+      ) {
+        return response.status(400).json({
+          erro: "Status inválido."
+        });
+      }
+
+      try {
+        const recursoCRUD = new RecursoCRUD(db, tipo);
+
+        const resultados = await recursoCRUD.atualizaStatusRecurso(
+          id,
+          status.trim()
+        );
+
+        if (resultados.recordset.length === 0) {
+          return response.status(404).json({
+            erro: "Recurso não encontrado."
+          });
         }
 
-        if (typeof status !== 'string' || !STATUS_VALIDOS.includes(status.trim())) {
-            return res.status(400).json({
-                erro: `Status inválido. Use: ${STATUS_VALIDOS.join(', ')}.`
-            });
-        }
+        return response.status(200).json({
+          mensagem: "Status atualizado com sucesso.",
+          recurso: resultados.recordset[0]
+        });
 
-        const resultado = await recursoCRUD.atualizaStatusRecurso(id, status.trim());
-
-        if (!resultado) {
-            return res.status(404).json({ erro: 'Recurso não encontrado.' });
-        }
-
-        return res.status(200).json({ mensagem: 'Status atualizado com sucesso.' });
-    } catch (erro) {
-        console.error(erro);
-        return res.status(500).json({ erro: 'Erro ao atualizar o status do recurso.' });
-    }
-}
+      } catch (erro) {
+        tratarErro(response, erro, "Erro ao atualizar status do recurso");
+      }
+    };
+  }
 }  // end da class RecursoController
 
 module.exports = RecursoController;
