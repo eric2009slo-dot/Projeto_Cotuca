@@ -1,4 +1,4 @@
-const CAMPOS = "id, codigo, nome, capacidade, localizacao, tipo";
+const CAMPOS = "id, codigo, nome, capacidade, localizacao, tipo, status";
 
 // Classe com os comandos SQL da tabela RECURSO
 // Laboratório e sala são recursos; o campo tipo diferencia os dois:
@@ -66,6 +66,19 @@ class RecursoCRUD
       .input("tipo", this.db.VarChar(12), this.tipo)
       .query("DELETE FROM RECURSO WHERE id = @id AND tipo = @tipo");
   }
+
+    // altera somente o status de um recurso
+  // (tipo null = vale para laboratório e sala; recordset vazio = recurso não existe)
+  atualizaStatusRecurso(id, status) {
+    return new this.db.Request()
+      .input("id", this.db.Int, Number(id))
+      .input("status", this.db.VarChar(30), status)
+      .input("tipo", this.db.VarChar(12), this.tipo)
+      .query(`UPDATE RECURSO SET status = @status
+              OUTPUT INSERTED.id, INSERTED.codigo, INSERTED.nome, INSERTED.tipo, INSERTED.status
+              WHERE id = @id AND (@tipo IS NULL OR tipo = @tipo)`);
+  }
 }  // end da class RecursoCRUD
+
 
 module.exports = RecursoCRUD;

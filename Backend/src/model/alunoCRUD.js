@@ -3,7 +3,7 @@ constructor(db) {
 this._db = db;
 }
 
-```
+
 // Listar todos os alunos
 geraListagemDeAlunos() {
     return new Promise((resolve, reject) => {
@@ -127,7 +127,7 @@ atualizaAluno(id, aluno) {
         });
     });
 }
-```
+
 
 }
 
