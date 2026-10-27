@@ -6,7 +6,8 @@ import {
   FlaskConical,
   DoorOpen,
   ClipboardList,
-  ArrowRight
+  ArrowRight,
+  CalendarDays
 } from "lucide-react";
 
 export default function Gerenciamento() {
@@ -81,6 +82,17 @@ export default function Gerenciamento() {
             );
           })}
         </section>
+
+        <Link
+          href="/reservas"
+          className="mt-8 flex items-center justify-center gap-3 rounded-xl border border-[#5BC0BE] bg-[#12343B] p-4 text-[#5BC0BE] transition hover:bg-[#17454D]"
+        >
+          <CalendarDays size={26} />
+          <span className="font-semibold">
+            Acessar Área de Reservas
+          </span>
+          <ArrowRight size={20} />
+        </Link>
       </div>
     </main>
   );

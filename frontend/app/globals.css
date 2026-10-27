@@ -428,3 +428,123 @@ main:has(.status-container) .status-container section button {
   margin-left: 0;
   margin-right: 0;
 }
+
+
+
+
+
+
+
+/*main da reserva */
+
+.reservas-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: left;
+  transform: translateX(200px);
+}
+.reservas-container section {
+  width: 100%;
+}
+
+.reservas-container section > a {
+  min-width: 0;
+}
+
+.reservas-container h2 {
+  font-size: 24px;
+  font-family: inherit;
+}
+
+@media (max-width: 700px) {
+  .reservas-container section {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+
+/* Nova Reserva */
+
+.nova-reserva-container {
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.nova-reserva-container section {
+  width: 100%;
+}
+
+.nova-reserva-container form > div {
+  width: 100%;
+  max-width: none;
+}
+
+.nova-reserva-container input,
+.nova-reserva-container select,
+.nova-reserva-container form button {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.nova-reserva-container h2 {
+  font-size: 24px;
+  font-family: inherit;
+}
+
+
+
+
+
+
+
+/* Consulta de Reservas */
+main:has(.consulta-container) .consulta-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+main:has(.consulta-container) .consulta-container section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.consulta-container) .consulta-container form > div {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+
+main:has(.consulta-container) .consulta-container input,
+main:has(.consulta-container) .consulta-container select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.consulta-container) .consulta-container h2 {
+  font-size: 24px;
+  font-family: inherit;
+  margin: 0 0 20px;
+}
+
+main:has(.consulta-container) .consulta-container table {
+  min-width: 850px;
+}
+
+main:has(.consulta-container) .consulta-container form button {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+main:has(.consulta-container) .consulta-container section > div {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
