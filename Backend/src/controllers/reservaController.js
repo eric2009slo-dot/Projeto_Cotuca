@@ -47,6 +47,31 @@ function limparReserva(dados) {
   };
 }
 
+// Converte o motivo de recusa devolvido pelo model (reservaCRUD) em resposta HTTP.
+// Devolve true se já respondeu (ou seja, a reserva foi recusada) e false se está tudo ok.
+function responderRecusa(response, resultado) {
+  switch (resultado) {
+    case "recurso_inexistente":
+      response.status(404).json({ erro: "Recurso não encontrado." });
+      return true;
+    case "recurso_bloqueado":
+      response.status(409).json({
+        erro: "Este recurso está bloqueado e não pode ser reservado."
+      });
+      return true;
+    case "conflito":
+      response.status(409).json({
+        erro: "Este recurso já está reservado, ocupado ou bloqueado nesse período."
+      });
+      return true;
+    case "reserva_inexistente":
+      response.status(404).json({ erro: "Reserva não encontrada." });
+      return true;
+    default:
+      return false;
+  }
+}
+
 class ReservaController
 {
   // GET /reservas   (todos os filtros são opcionais, via query string)
@@ -108,16 +133,12 @@ class ReservaController
         const reserva = limparReserva(dados);
         const reservaCRUD = new ReservaCRUD(db);
 
-        // não deixa reservar um recurso que já está tomado no período
-        const conflito = await reservaCRUD.existeConflito(reserva, 0);
-        if (conflito.recordset[0].total > 0) {
-          return response.status(409).json({
-            erro: "Este recurso já está reservado, ocupado ou bloqueado nesse período."
-          });
-        }
+        // Na mesma transação: confere se o recurso existe (404), se está
+        // bloqueado (409) e se há conflito de horário (409); só então grava.
+        const resultado = await reservaCRUD.insereReservaValidada(reserva);
+        if (responderRecusa(response, resultado.resultado)) return;
 
-        const resultados = await reservaCRUD.insereReserva(reserva);
-        response.status(201).json({ id: resultados.recordset[0].id });
+        response.status(201).json({ id: resultado.id });
       } catch (erro) {
         tratarErro(response, erro, "Erro ao inserir nova RESERVA no BD!");
       }
@@ -138,18 +159,12 @@ class ReservaController
         const reserva = limparReserva(dados);
         const reservaCRUD = new ReservaCRUD(db);
 
-        // ignora a própria reserva na checagem de conflito
-        const conflito = await reservaCRUD.existeConflito(reserva, id);
-        if (conflito.recordset[0].total > 0) {
-          return response.status(409).json({
-            erro: "Este recurso já está reservado, ocupado ou bloqueado nesse período."
-          });
-        }
+        // Na mesma transação: confere se a reserva existe (404), se o recurso
+        // existe (404), se está bloqueado (409) e se há conflito de horário
+        // (409, ignorando a própria reserva); só então atualiza.
+        const resultado = await reservaCRUD.atualizaReservaValidada(id, reserva);
+        if (responderRecusa(response, resultado.resultado)) return;
 
-        const resultados = await reservaCRUD.atualizaReserva(id, reserva);
-        if (resultados.rowsAffected[0] === 0) {
-          return response.status(404).json({ erro: "Reserva não encontrada." });
-        }
         response.json({ id: Number(id) });
       } catch (erro) {
         tratarErro(response, erro, "Erro ao atualizar dados da RESERVA no BD!");
