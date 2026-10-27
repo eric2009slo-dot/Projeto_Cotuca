@@ -83,8 +83,11 @@ class ReservaCRUD
   // que se sobrepõem ao período novo. idIgnorar = reserva que está sendo
   // editada (0 quando for uma reserva nova).
   // Se a reserva nova tiver status "Livre", não há conflito.
-  existeConflito(reserva, idIgnorar) {
-    return new this.db.Request()
+  // O parâmetro "transacao" é opcional: quando vem preenchido, a consulta
+  // roda dentro dessa transação (sem ele, funciona como antes).
+  existeConflito(reserva, idIgnorar, transacao) {
+    const request = transacao ? new this.db.Request(transacao) : new this.db.Request();
+    return request
       .input("id_recurso", this.db.Int, Number(reserva.id_recurso))
       .input("id_status", this.db.Int, Number(reserva.id_status))
       .input("id_ignorar", this.db.Int, Number(idIgnorar) || 0)
@@ -111,8 +114,10 @@ class ReservaCRUD
   }
 
   // insere uma nova reserva e devolve o ID criado
-  insereReserva(reserva) {
-    return new this.db.Request()
+  // (o parâmetro "transacao" é opcional, como no existeConflito)
+  insereReserva(reserva, transacao) {
+    const request = transacao ? new this.db.Request(transacao) : new this.db.Request();
+    return request
       .input("id_usuario", this.db.Int, Number(reserva.id_usuario))
       .input("id_recurso", this.db.Int, Number(reserva.id_recurso))
       .input("id_status", this.db.Int, Number(reserva.id_status))
@@ -130,8 +135,10 @@ class ReservaCRUD
   }
 
   // atualiza uma reserva
-  atualizaReserva(id, reserva) {
-    return new this.db.Request()
+  // (o parâmetro "transacao" é opcional, como no existeConflito)
+  atualizaReserva(id, reserva, transacao) {
+    const request = transacao ? new this.db.Request(transacao) : new this.db.Request();
+    return request
       .input("id", this.db.Int, Number(id))
       .input("id_usuario", this.db.Int, Number(reserva.id_usuario))
       .input("id_recurso", this.db.Int, Number(reserva.id_recurso))
@@ -158,6 +165,95 @@ class ReservaCRUD
     return new this.db.Request()
       .input("id", this.db.Int, Number(id))
       .query("DELETE FROM RESERVA WHERE id = @id");
+  }
+
+  // ---------------------------------------------------------------------
+  // Validação + gravação em uma única transação
+  // ---------------------------------------------------------------------
+
+  // Roda dentro de uma transação já aberta. Trava a linha do recurso
+  // (UPDLOCK + HOLDLOCK), então dois pedidos para o mesmo recurso (ou uma
+  // troca de status do recurso) esperam um ao outro até o COMMIT/ROLLBACK.
+  // Devolve o motivo da recusa ou null se tudo estiver certo:
+  //   "recurso_inexistente" | "recurso_bloqueado" | "conflito"
+  async validaReserva(reserva, idIgnorar, transacao) {
+    const recurso = await new this.db.Request(transacao)
+      .input("id_recurso", this.db.Int, Number(reserva.id_recurso))
+      .query("SELECT id, status FROM RECURSO WITH (UPDLOCK, HOLDLOCK) WHERE id = @id_recurso");
+
+    if (recurso.recordset.length === 0) {
+      return "recurso_inexistente";
+    }
+
+    const statusRecurso = String(recurso.recordset[0].status || "").trim().toLowerCase();
+    if (statusRecurso === "bloqueado") {
+      return "recurso_bloqueado";
+    }
+
+    const conflito = await this.existeConflito(reserva, idIgnorar, transacao);
+    if (conflito.recordset[0].total > 0) {
+      return "conflito";
+    }
+
+    return null;
+  }
+
+  // Cadastra uma reserva já validando recurso (existe? bloqueado?) e conflito
+  // de horário, tudo na mesma transação.
+  // Retorna { resultado: "ok", id } ou { resultado: <motivo da recusa> }.
+  async insereReservaValidada(reserva) {
+    const transacao = new this.db.Transaction();
+    await transacao.begin();
+    try {
+      const problema = await this.validaReserva(reserva, 0, transacao);
+      if (problema) {
+        await transacao.rollback();
+        return { resultado: problema };
+      }
+
+      const inserida = await this.insereReserva(reserva, transacao);
+      await transacao.commit();
+      return { resultado: "ok", id: inserida.recordset[0].id };
+    } catch (erro) {
+      try { await transacao.rollback(); } catch (e) { /* transação já encerrada */ }
+      throw erro;
+    }
+  }
+
+  // Atualiza uma reserva já validando recurso (existe? bloqueado?) e conflito
+  // de horário, tudo na mesma transação.
+  // Retorna { resultado: "ok" } ou { resultado: <motivo da recusa> }
+  // (além dos motivos do cadastro, pode vir "reserva_inexistente").
+  async atualizaReservaValidada(id, reserva) {
+    const transacao = new this.db.Transaction();
+    await transacao.begin();
+    try {
+      const existente = await new this.db.Request(transacao)
+        .input("id", this.db.Int, Number(id))
+        .query("SELECT id FROM RESERVA WHERE id = @id");
+      if (existente.recordset.length === 0) {
+        await transacao.rollback();
+        return { resultado: "reserva_inexistente" };
+      }
+
+      const problema = await this.validaReserva(reserva, id, transacao);
+      if (problema) {
+        await transacao.rollback();
+        return { resultado: problema };
+      }
+
+      const atualizada = await this.atualizaReserva(id, reserva, transacao);
+      if (atualizada.rowsAffected[0] === 0) {
+        await transacao.rollback();
+        return { resultado: "reserva_inexistente" };
+      }
+
+      await transacao.commit();
+      return { resultado: "ok" };
+    } catch (erro) {
+      try { await transacao.rollback(); } catch (e) { /* transação já encerrada */ }
+      throw erro;
+    }
   }
 }  // end da class ReservaCRUD
 
