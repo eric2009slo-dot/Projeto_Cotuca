@@ -1,12 +1,21 @@
 
 import Link from "next/link";
 import { CalendarPlus, CalendarSearch, ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+
 
 export default function Reservas() {
   return (
     <main className="min-h-screen bg-[#171A1F] p-6 text-[#F5F7FA]">
 
       <div className="reservas-container">
+        <Link
+          href="/gerenciamento"
+          className="inline-flex items-center gap-2 text-[#5BC0BE] hover:underline"
+        >
+          <ArrowLeft size={20} />
+            Voltar ao Gerenciamento
+        </Link>
 
         <h1 className="text-3xl font-bold">
           Área de Reservas

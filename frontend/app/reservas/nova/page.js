@@ -21,6 +21,30 @@ export default function NovaReserva() {
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
   const [statusReserva, setStatusReserva] = useState("");
+  const [agora, setAgora] = useState(null);
+
+  // Atualiza a data e a hora a cada 30 segundos
+  useEffect(() => {
+    function atualizarRelogio() {
+      setAgora(new Date());
+    }
+
+    atualizarRelogio();
+
+    const intervalo = setInterval(atualizarRelogio, 30000);
+
+    return () => clearInterval(intervalo);
+  }, []);
+
+  // Data atual no formato YYYY-MM-DD
+  const hoje = agora
+    ? `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, "0")}-${String(agora.getDate()).padStart(2, "0")}`
+    : "";
+
+  // Horário atual no formato HH:MM
+  const horaAtual = agora
+    ? `${String(agora.getHours()).padStart(2, "0")}:${String(agora.getMinutes()).padStart(2, "0")}`
+    : "";
 
   useEffect(() => {
     async function carregarDados() {
@@ -54,8 +78,26 @@ export default function NovaReserva() {
     setMensagem("");
     setErro("");
 
+    // Verifica se as datas e horas foram preenchidas
+    const inicioReserva = new Date(`${dataInicial}T${horaInicial}`);
+    const fimReserva = new Date(`${dataFinal}T${horaFinal}`);
 
-    if (`${dataFinal}T${horaFinal}` <= `${dataInicial}T${horaInicial}`) {
+    if (
+      Number.isNaN(inicioReserva.getTime()) ||
+      Number.isNaN(fimReserva.getTime())
+    ) {
+      setErro("Preencha corretamente as datas e os horários.");
+      return;
+    }
+
+    // Impede reservar em uma data ou horário passado
+    if (inicioReserva <= new Date()) {
+      setErro("Não é possível reservar uma data ou horário que já passou.");
+      return;
+    }
+
+    // Impede que a reserva termine antes de começar
+    if (fimReserva <= inicioReserva) {
       setErro("A data e hora final devem ser posteriores ao início.");
       return;
     }
@@ -169,22 +211,26 @@ export default function NovaReserva() {
             </div>
 
             <div>
-                <label className="mb-2 block">Status da Reserva</label>
+              <label className="mb-2 block">Status da Reserva</label>
 
-                <select
-                    value={statusReserva}
-                    onChange={(e) => setStatusReserva(e.target.value)}
-                    required
-                    className="w-full rounded-lg bg-[#171A1F] p-3"
-                >
-                    <option value="">Selecione um status</option>
+              <select
+                value={statusReserva}
+                onChange={(e) => setStatusReserva(e.target.value)}
+                required
+                className="w-full rounded-lg bg-[#171A1F] p-3"
+              >
+                <option value="">Selecione um status</option>
 
-                    {status.map((item) => (
-                        <option key={item.id} value={item.id}>
-                            {item.nome}
-                        </option>
-                    ))}
-                </select>
+                {status
+                  .filter((item) =>
+                    ["Livre", "Ocupado", "Bloqueado", "Reservado"].includes(item.nome)
+                  )
+                  .map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.nome}
+                    </option>
+                  ))}
+              </select>
             </div>
 
             <div>
@@ -192,9 +238,10 @@ export default function NovaReserva() {
               <input
                 type="date"
                 value={dataInicial}
+                min={hoje || undefined}
                 onChange={(e) => setDataInicial(e.target.value)}
                 required
-                className="w-full rounded-lg bg-[#171A1F] p-3"
+                className="w-full rounded-lg border border-[#5BC0BE] bg-[#171A1F] p-3 text-[#F5F7FA] [color-scheme:dark]"
               />
             </div>
 
@@ -203,9 +250,10 @@ export default function NovaReserva() {
               <input
                 type="date"
                 value={dataFinal}
+                min={dataInicial > hoje ? dataInicial : hoje || undefined}
                 onChange={(e) => setDataFinal(e.target.value)}
                 required
-                className="w-full rounded-lg bg-[#171A1F] p-3"
+                className="w-full rounded-lg border border-[#5BC0BE] bg-[#171A1F] p-3 text-[#F5F7FA] [color-scheme:dark]"
               />
             </div>
 
@@ -214,9 +262,10 @@ export default function NovaReserva() {
               <input
                 type="time"
                 value={horaInicial}
+                min={dataInicial === hoje ? horaAtual : undefined}
                 onChange={(e) => setHoraInicial(e.target.value)}
                 required
-                className="w-full rounded-lg bg-[#171A1F] p-3"
+                className="w-full rounded-lg border border-[#5BC0BE] bg-[#171A1F] p-3 text-[#F5F7FA] [color-scheme:dark]"
               />
             </div>
 
@@ -225,9 +274,10 @@ export default function NovaReserva() {
               <input
                 type="time"
                 value={horaFinal}
+                min={dataFinal === dataInicial ? horaInicial : undefined}
                 onChange={(e) => setHoraFinal(e.target.value)}
                 required
-                className="w-full rounded-lg bg-[#171A1F] p-3"
+                className="w-full rounded-lg border border-[#5BC0BE] bg-[#171A1F] p-3 text-[#F5F7FA] [color-scheme:dark]"
               />
             </div>
 

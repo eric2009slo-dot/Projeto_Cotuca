@@ -9,6 +9,7 @@ import {
   ArrowRight,
   CalendarDays
 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 export default function Gerenciamento() {
   const opcoes = [
@@ -36,6 +37,13 @@ export default function Gerenciamento() {
     <main className="min-h-screen bg-[#171A1F] p-6 text-[#F5F7FA] md:p-12">
       <div className="mx-auto w-full max-w-6xl min-w-0">
         <header className="mb-10">
+        <Link
+          href="/"
+          className="fixed top-8 left-8 z-50 flex items-center gap-3 rounded-lg border border-[#5BC0BE] bg-[#12343B] px-5 py-3 text-lg font-semibold text-[#5BC0BE] hover:bg-[#1B454D]"
+        >
+          <ArrowLeft size={26} />
+            Voltar ao Menu
+        </Link>
           <p className="mb-2 text-sm font-semibold tracking-[0.2em] text-[#5BC0BE]">
             IRON BONDS
           </p>
