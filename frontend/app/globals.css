@@ -1,0 +1,551 @@
+@import url('https://fonts.googleapis.com/css2?family=Jacquard+12&display=swap');
+@import "tailwindcss";
+:root {
+  --background: #171A1F;
+  --foreground: #F5F7FA;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: linear-gradient(
+    120deg,
+    #171A1F,
+    #12343B,
+    #2A6F73,
+    #12343B,
+    #171A1F
+  );
+  background-size: 300% 300%;
+  animation: movimentoGradiente 20s ease infinite;
+
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+}
+
+@keyframes movimentoGradiente {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
+main {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+main div {
+  width: 90%;
+  max-width: 700px;
+  text-align: center;
+}
+
+main h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+main h2 {
+  font-size: 42px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-family: "Tapestry"
+}
+
+main p {
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+main button {
+  margin: 10px;
+  padding: 12px 24px;
+  background-color: #5BC0BE;
+  color: #171A1F;
+  border: none;
+  border-radius: 6px;
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+
+main button:hover {
+  background-color: #12343B;
+  color: #5BC0BE;
+}
+
+.login-card input {
+  display: block;
+  width: 300px;
+  padding: 12px;
+  margin: 6px auto 12px;
+  background-color: #2A2F36;
+  color: #F5F7FA;
+  border: 1px solid #5BC0BE;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.login-card {
+  background-color: #2A2F36;
+  padding: 30px 35px;
+  border-radius: 12px;
+  width: 430px;
+  margin: auto;
+  box-sizing: border-box;
+}
+
+.login-card label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.cadastro-link {
+  text-align: center;
+  white-space: nowrap;
+  margin-top: 20px;
+}
+
+.cadastro-link a {
+  color: #5BC0BE;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.cadastro-link a:hover {
+  color: #F5F7FA;
+}
+
+
+.senha-container {
+  position: relative;
+  width: 300px;
+  margin: 0 auto;
+}
+
+.senha-container input {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 8px 0 20px;
+  padding-right: 45px;
+}
+
+.senha-container button {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  background: none;
+  border: none;
+  color: #5BC0BE;
+  padding: 5px;
+  margin: 0;
+}
+
+.senha-container button:hover {
+  background: none;
+  color: #F5F7FA;
+}
+
+
+.login-card > button:last-child {
+  display: block;
+  width: 300px;
+  margin: 15px auto 5px;
+}
+
+
+
+
+
+
+
+
+main:has(section.grid) > div {
+  width: 100%;
+  max-width: 1200px;
+}
+
+main section.grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+main section.grid > a {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 30px;
+}
+
+main section.grid > a h2 {
+  font-size: 24px;
+  white-space: nowrap;
+  margin: 0;
+}
+
+main section.grid > a p {
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+main section.grid > a svg {
+  width: 30px;
+  height: 30px;
+}
+
+@media (max-width: 900px) {
+  main section.grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+main section.grid > a h2 {
+  font-size: 27px;
+  white-space: nowrap;
+  margin: 0;
+}
+
+main section.grid > a p {
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+main section.grid > a svg {
+  width: 36px;
+  height: 36px;
+}
+
+
+main section.grid > a > div {
+  font-size: 17px;
+}
+
+
+
+
+main:has(.laboratorio-container) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+main:has(.laboratorio-container) .laboratorio-container {
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+  text-align: left;
+  transform: translateX(90px);
+}
+
+main:has(.laboratorio-container) .laboratorio-container > section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.laboratorio-container) h2 {
+  font-size: 24px;
+  font-family: inherit;
+  margin: 0;
+}
+
+
+
+main:has(.laboratorio-container) .laboratorio-container form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+main:has(.laboratorio-container) .laboratorio-container form > div {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+main:has(.laboratorio-container) .laboratorio-container form input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.laboratorio-container) .laboratorio-container form button {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  align-self: stretch;
+}
+
+
+
+
+
+
+
+
+
+
+main:has(.sala-container) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+main:has(.sala-container) .sala-container {
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+  text-align: left;
+  transform: translateX(90px);
+}
+
+main:has(.sala-container) .sala-container > section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.sala-container) h2 {
+  font-size: 24px;
+  font-family: inherit;
+  margin: 0;
+}
+
+
+
+main:has(.sala-container) .sala-container form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+main:has(.sala-container) .sala-container form > div {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+main:has(.sala-container) .sala-container form input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.sala-container) .sala-container form button {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  align-self: stretch;
+}
+
+
+/* Essa é a parte do Status*/
+
+main:has(.status-container) .status-container {
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+main:has(.status-container) .status-container > section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.status-container) .status-container form > div {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+
+main:has(.status-container) .status-container form input,
+main:has(.status-container) .status-container form button {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.status-container) h2 {
+  font-size: 24px;
+  font-family: inherit;
+  margin: 0;
+}
+
+
+
+main:has(.status-container) .status-container section > div {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+
+main:has(.status-container) .status-container section > div > div {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+main:has(.status-container) .status-container select {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.status-container) .status-container section button {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+
+
+
+
+
+
+/*main da reserva */
+
+.reservas-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: left;
+  transform: translateX(200px);
+}
+.reservas-container section {
+  width: 100%;
+}
+
+.reservas-container section > a {
+  min-width: 0;
+}
+
+.reservas-container h2 {
+  font-size: 24px;
+  font-family: inherit;
+}
+
+@media (max-width: 700px) {
+  .reservas-container section {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+
+/* Nova Reserva */
+
+.nova-reserva-container {
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.nova-reserva-container section {
+  width: 100%;
+}
+
+.nova-reserva-container form > div {
+  width: 100%;
+  max-width: none;
+}
+
+.nova-reserva-container input,
+.nova-reserva-container select,
+.nova-reserva-container form button {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.nova-reserva-container h2 {
+  font-size: 24px;
+  font-family: inherit;
+}
+
+
+
+
+
+
+
+/* Consulta de Reservas */
+main:has(.consulta-container) .consulta-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+main:has(.consulta-container) .consulta-container section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.consulta-container) .consulta-container form > div {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+
+main:has(.consulta-container) .consulta-container input,
+main:has(.consulta-container) .consulta-container select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+main:has(.consulta-container) .consulta-container h2 {
+  font-size: 24px;
+  font-family: inherit;
+  margin: 0 0 20px;
+}
+
+main:has(.consulta-container) .consulta-container table {
+  min-width: 850px;
+}
+
+main:has(.consulta-container) .consulta-container form button {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+main:has(.consulta-container) .consulta-container section > div {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+
