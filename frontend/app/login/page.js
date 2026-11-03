@@ -70,6 +70,9 @@ async function fazerLogin(e) {
           required
         />
 
+
+        
+
         <label>
           <Lock size={18} />
           Senha
@@ -81,15 +84,42 @@ async function fazerLogin(e) {
           required
         />
 
-        <button type="submit" disabled={carregando}>
+        <div
+          style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "12px",
+          width: "100%",
+          gridColumn: "1 / -1"
+        }}
+        >
+          <button
+            type="submit"
+            disabled={carregando}
+            style={{ margin: 0 }}
+          >
           {carregando ? "ENTRANDO..." : "ENTRAR"}
-        </button>
+          </button>
 
-          {mensagem && <p role="status">{mensagem}</p>}
+          <Link
+            href="/recuperar-senha"
+            style={{
+            display: "block",
+            position: "static",
+            color: "#5BC0BE",
+            margin: 0,
+            textAlign: "center"
+          }}
+          >
+            Esqueceu sua senha?
+          </Link>
+        </div>
 
-        <p className="esqueci-senha">
-          Esqueceu sua senha?
-        </p>
+        {mensagem && <p role="status">{mensagem}</p>}
+
+        
+
 
         <p className="cadastro-link">
           Ainda não possui uma conta?{" "}
