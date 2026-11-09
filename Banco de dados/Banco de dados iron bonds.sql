@@ -1,7 +1,4 @@
-/* ---------------------------------------------------------------------
-   USUARIO: cadastro do usuário + login/senha + dados de auditoria
-   (senha_hash: guardar sempre criptografada, ex.: bcrypt no Node)
---------------------------------------------------------------------- */
+----TABELAS -----------------
 CREATE TABLE USUARIO (
     id                  INT IDENTITY(1,1)  NOT NULL,
     cpf                 CHAR(11)           NOT NULL,
